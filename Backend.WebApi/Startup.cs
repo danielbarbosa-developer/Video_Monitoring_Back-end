@@ -2,6 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Backend.Abstractions.ApplicationAbstractions;
+using Backend.Abstractions.InfrastructureAbstractions;
+using Backend.Application.Configurations;
+using Backend.Application.Dtos;
+using Backend.Application.Dtos.Input;
+using Backend.Application.Services;
+using Backend.Domain.Entities;
+using Backend.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +35,16 @@ namespace Backend.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Adding abstractions and their implementations to the services container
+            services.AddTransient<IService<ServerDtoInput, ServerDto>, ServerService>();
+            services.AddTransient<IService<VideoDtoInput, VideoDto>, VideoService>();
+            services.AddTransient<IRepository<Server>, ServerRepository>();
+            services.AddTransient<IRepository<Video>, VideoRepository>();
+            //____________________________________________________________________________________
+            // Automapper configuration
+            AutoMapperConfig.InicializeAutoMapper();
+            services.AddSingleton<IMapper>(provider => new Mapper(AutoMapperConfig.Configuration));
+            //_____________________________________________________________________________________
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

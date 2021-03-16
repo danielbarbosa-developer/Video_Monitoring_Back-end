@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Backend.Domain.Entities;
 using Backend.Application.Dtos;
+using Backend.Application.Dtos.Input;
 
 namespace Backend.Application.Configurations
 {
@@ -14,6 +15,8 @@ namespace Backend.Application.Configurations
             {
                 config.CreateMap<Server, ServerDto>();
                 config.CreateMap<ServerDto, Server>();
+                config.CreateMap<ServerDtoInput, Server>();
+                config.CreateMap<VideoDtoInput, Video>();
             });
         }
         public static T Map<T>(object source) => Configuration.CreateMapper().Map<T>(source);

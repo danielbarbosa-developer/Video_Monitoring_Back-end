@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Backend.Abstractions.ApplicationAbstractions;
+using Backend.Application.Dtos;
+using Backend.Application.Dtos.Input;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.WebApi.Controllers
@@ -8,6 +12,11 @@ namespace Backend.WebApi.Controllers
     [Route("[controller]")]
     public class ApiController : ControllerBase
     {
+        private readonly IService<ServerDtoInput, ServerDto> _serverService;
+        public ApiController(IService<ServerDtoInput, ServerDto> serverService)
+        {
+            _serverService = serverService;
+        }
         [HttpGet ("Servers")]
         public ActionResult<IEnumerable<Server>> GetServers()
         {
@@ -31,16 +40,14 @@ namespace Backend.WebApi.Controllers
         /// <param name="server"></param>
         /// <returns></returns>
         [HttpPost ("server")]
-        public ActionResult<Server> PostServer([FromBody] Server server)
+        public async Task<ActionResult<string>> PostServer([FromBody] ServerDtoInput server)
         {
-            if (server != null)
-            {
-                return Ok(server);
-            }
-            else
+            if (server == null)
             {
                 return BadRequest();
             }
+            string response = await _serverService.InsertAsync(server);
+            return Ok(response); 
         }
         [HttpDelete ("server/{serverId}")]
         public ActionResult<Server> DeleteServer(string serverId)
