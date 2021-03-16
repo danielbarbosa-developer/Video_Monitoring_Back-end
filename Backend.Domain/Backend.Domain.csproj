@@ -5,4 +5,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Backend.Abstractions\Backend.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

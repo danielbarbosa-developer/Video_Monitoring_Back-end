@@ -1,9 +1,8 @@
 ﻿using System;
-using Backend.Abstractions.DomainAbstractions;
 
-namespace Backend.Domain.Entities
+namespace Backend.Application.Dtos
 {
-    public class Server : IEntity
+    public class ServerDto
     {
         public Guid ServerId { get; set; }
         public string Name { get; set; } = null!;

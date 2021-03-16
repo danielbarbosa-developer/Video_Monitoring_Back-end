@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories" />
+      <ProjectReference Include="..\Backend.Abstractions\Backend.Abstractions.csproj" />
+      <ProjectReference Include="..\Backend.Domain\Backend.Domain.csproj" />
     </ItemGroup>
 
 </Project>
