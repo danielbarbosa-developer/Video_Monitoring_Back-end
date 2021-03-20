@@ -10,6 +10,7 @@ using Backend.Application.Dtos;
 using Backend.Application.Dtos.Input;
 using Backend.Application.Services;
 using Backend.Domain.Entities;
+using Backend.Infrastructure.Configurations;
 using Backend.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,7 @@ namespace Backend.WebApi
             //Adding abstractions and their implementations to the services container
             services.AddTransient<IService<ServerDtoInput, ServerDto>, ServerService>();
             services.AddTransient<IService<VideoDtoInput, VideoDto>, VideoService>();
+            services.AddTransient<IDatabaseConnection, PostgresDatabaseConnection>();
             services.AddTransient<IRepository<Server>, ServerRepository>();
             services.AddTransient<IRepository<Video>, VideoRepository>();
             //____________________________________________________________________________________

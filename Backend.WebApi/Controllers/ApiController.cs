@@ -42,24 +42,19 @@ namespace Backend.WebApi.Controllers
         [HttpPost ("server")]
         public async Task<ActionResult<string>> PostServer([FromBody] ServerDtoInput server)
         {
-            if (server == null)
-            {
-                return BadRequest();
-            }
             string response = await _serverService.InsertAsync(server);
             return Ok(response); 
         }
         [HttpDelete ("server/{serverId}")]
-        public ActionResult<Server> DeleteServer(string serverId)
+        public async Task<ActionResult<string>> DeleteServer(string? serverId)
         {
-            if (serverId != null)
-            {
-                return Ok();
-            }
-            else
+            if (serverId == null)
             {
                 return BadRequest();
             }
+            await _serverService.DropAsync(serverId);
+            return Ok();
+
         }
         [HttpGet ("server/{serverId}/videos/{videoId}")]
         public ActionResult<Server> GetVideo(string serverId, string videoId)

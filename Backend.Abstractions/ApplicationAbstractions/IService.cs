@@ -9,7 +9,7 @@ namespace Backend.Abstractions.ApplicationAbstractions
         Task<string> InsertAsync(TInput entity);
         Task InsertAsync(List<TInput> entity);
         Task UpdateAsync(TInput entityToUpdate);
-        Task DropAsync(Guid id);
+        Task DropAsync(string id);
         Task DropAsync(TInput entityToDelete);
         Task<TModel> GetByIdAsync(object id);
     }

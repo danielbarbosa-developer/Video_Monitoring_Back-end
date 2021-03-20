@@ -9,5 +9,10 @@ namespace Backend.Domain.Entities
         public string Name { get; set; } = null!;
         public string IpAddress { get; set; } = null!;
         public int Port { get; set; }
+
+        public void GenerateGuid()
+        {
+            ServerId = new Guid();
+        }
     }
 }

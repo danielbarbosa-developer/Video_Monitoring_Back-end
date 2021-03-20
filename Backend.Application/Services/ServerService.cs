@@ -53,7 +53,7 @@ namespace Backend.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task DropAsync(Guid id)
+        public async Task DropAsync(string id)
         {
             throw new NotImplementedException();
         }
