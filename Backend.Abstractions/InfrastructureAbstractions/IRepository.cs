@@ -13,7 +13,8 @@ namespace Backend.Abstractions.InfrastructureAbstractions
         Task UpdateAsync(TModel entityToUpdate);
         Task DropAsync(Guid id);
         Task DropAsync(TModel entityToDelete);
-        Task<TModel> GetByIdAsync(object id);
+        Task<TModel> GetByIdAsync(Guid id);
+        Task<IEnumerable<TModel>> GetAll();
         Task<bool> ExistsAsync(Expression<Func<TModel, bool>> filter);
     }
 }

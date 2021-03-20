@@ -9,6 +9,11 @@ namespace Backend.Infrastructure.Repositories
 {
     public class VideoRepository : IRepository<Video>
     {
+        public Task<IEnumerable<Video>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Guid> InsertAsync(Video entity)
         {
             throw new NotImplementedException();
@@ -34,7 +39,7 @@ namespace Backend.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Video> GetByIdAsync(object id)
+        public async Task<Video> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }

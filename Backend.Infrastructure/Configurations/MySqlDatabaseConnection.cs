@@ -1,7 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Backend.Abstractions.InfrastructureAbstractions;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace Backend.Infrastructure.Configurations
 {
@@ -11,6 +12,10 @@ namespace Backend.Infrastructure.Configurations
         public MySqlDatabaseConnection(IConfiguration configuration)
         {
             ConnectionString = configuration.GetConnectionString("MySqlConnection");
+#if DEBUG
+            
+            Console.WriteLine($"NpgsqlConnection StringConnection: {this.ConnectionString}");
+#endif
         }
         public IDbConnection GetConnection()
         {

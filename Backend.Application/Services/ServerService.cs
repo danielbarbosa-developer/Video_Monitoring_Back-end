@@ -55,7 +55,8 @@ namespace Backend.Application.Services
 
         public async Task DropAsync(string id)
         {
-            throw new NotImplementedException();
+            var guid = Guid.Parse(id);
+            await _repository.DropAsync(guid);
         }
 
         public async Task DropAsync(ServerDtoInput entityToDelete)
@@ -63,9 +64,20 @@ namespace Backend.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ServerDto> GetByIdAsync(object id)
+        public async Task<ServerDto> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var guid = Guid.Parse(id);
+            return _mapper.Map<ServerDto>(await _repository.GetByIdAsync(guid));
+        }
+        public async Task<IEnumerable<ServerDto>> GetAllAsync()
+        {
+            List<ServerDto> serverDtos = new List<ServerDto>();
+            var servers = await _repository.GetAll();
+            foreach (var server in servers)
+            {
+                serverDtos.Add(_mapper.Map<ServerDto>(server));
+            }
+            return serverDtos;
         }
     }
 }

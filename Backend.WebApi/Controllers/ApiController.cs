@@ -18,8 +18,10 @@ namespace Backend.WebApi.Controllers
             _serverService = serverService;
         }
         [HttpGet ("Servers")]
-        public ActionResult<IEnumerable<Server>> GetServers()
+        public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
         {
+            var list = await _serverService.GetAllAsync();
+            /*
             List<Server> list = new List<Server>();
             for (int i = 0; i < 5; i++)
             {
@@ -31,8 +33,18 @@ namespace Backend.WebApi.Controllers
                     Port = 8080
                 });
             }
-
+            */
             return Ok(list);
+        }
+        [HttpGet("servers/{serverId}")]
+        public async Task<ActionResult<ServerDto>> GetServer(string? serverId)
+        {
+            if (serverId == null)
+            {
+                return BadRequest();
+            }
+            var server = await _serverService.GetByIdAsync(serverId);
+            return Ok(server);
         }
         /// <summary>
         /// Used to create a new server
@@ -57,7 +69,7 @@ namespace Backend.WebApi.Controllers
 
         }
         [HttpGet ("server/{serverId}/videos/{videoId}")]
-        public ActionResult<Server> GetVideo(string serverId, string videoId)
+        public ActionResult<VideoDto> GetVideo(string serverId, string videoId)
         {
             if (serverId != null && videoId != null)
             {
@@ -76,6 +88,7 @@ namespace Backend.WebApi.Controllers
         }
         */
     }
+    /*
     public class Server
     {
         public Guid ServerId { get; set; }
@@ -83,4 +96,5 @@ namespace Backend.WebApi.Controllers
         public string IpAddress { get; set; } = null!;
         public int Port { get; set; }
     }
+    */
 }

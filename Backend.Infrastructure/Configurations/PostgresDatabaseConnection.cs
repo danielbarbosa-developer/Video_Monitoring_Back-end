@@ -8,14 +8,19 @@ namespace Backend.Infrastructure.Configurations
 {
     public class PostgresDatabaseConnection : IDatabaseConnection
     {
-         public string ConnectionString { get; set; }
+        public string StringConnection { get; set; }
         public PostgresDatabaseConnection(IConfiguration configuration)
         {
-            ConnectionString = configuration.GetConnectionString("PostgresConnection");
+            this.StringConnection = configuration.GetConnectionString("PostgresConnection");
+#if DEBUG
+            
+            Console.WriteLine($"NpgsqlConnection StringConnection: {this.StringConnection}");
+#endif
         }
+
         public IDbConnection GetConnection()
         {
-            return new NpgsqlConnection(ConnectionString);
+            return new NpgsqlConnection(this.StringConnection);
         }
     }
 }

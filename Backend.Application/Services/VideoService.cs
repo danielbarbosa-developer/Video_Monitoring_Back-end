@@ -34,7 +34,12 @@ namespace Backend.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<VideoDto> GetByIdAsync(object id)
+        public async Task<VideoDto> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<VideoDto>> GetAllAsync()
         {
             throw new NotImplementedException();
         }

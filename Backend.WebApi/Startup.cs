@@ -39,7 +39,7 @@ namespace Backend.WebApi
             //Adding abstractions and their implementations to the services container
             services.AddTransient<IService<ServerDtoInput, ServerDto>, ServerService>();
             services.AddTransient<IService<VideoDtoInput, VideoDto>, VideoService>();
-            services.AddTransient<IDatabaseConnection, PostgresDatabaseConnection>();
+            services.AddTransient<IDatabaseConnection, MySqlDatabaseConnection>();
             services.AddTransient<IRepository<Server>, ServerRepository>();
             services.AddTransient<IRepository<Video>, VideoRepository>();
             //____________________________________________________________________________________

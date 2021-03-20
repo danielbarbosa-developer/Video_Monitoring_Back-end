@@ -6,8 +6,8 @@ using Backend.Abstractions.InfrastructureAbstractions;
 using Backend.Domain.Entities;
 using Backend.Infrastructure.Exceptions;
 using Dapper;
-using MySql.Data.MySqlClient;
-using Npgsql;
+using MySqlConnector;
+
 
 namespace Backend.Infrastructure.Repositories
 {
@@ -19,28 +19,51 @@ namespace Backend.Infrastructure.Repositories
         {
             _databaseConnection = databaseConnection;
         }
-        public async Task<Guid> InsertAsync(Server entity)
+        public async Task<IEnumerable<Server>> GetAll()
         {
-            entity.GenerateGuid(); // Sets the Guid to be added in database
-            await using NpgsqlConnection connection = (NpgsqlConnection)_databaseConnection.GetConnection();
+            using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
             try
             {
                 connection.Open();
-                string sql = "INSERT INTO server VALUES(@server_id, @server_name, @ip_address, @port);";
-                var result = await connection.ExecuteScalarAsync(sql,
-                    new
-                    {
-                        server_id = entity.ServerId, 
-                        server_name = entity.Name, 
-                        ip_address = entity.IpAddress, 
-                        port = entity.Port
-                    });
-                return new Guid();
+                string sql = "SELECT * FROM servers;";
+                var servers = await connection.QueryAsync<Server>(sql);
+                return servers;
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e.Message, e.StackTrace);
-                throw new RepositoryException("Failed to try to persist in the database", e);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                throw new RepositoryException("Failed to try to access the record in the database", e);
+            }
+        }
+
+        public async Task<Guid> InsertAsync(Server entity)
+        {
+            entity.GenerateGuid(); // Sets the Guid to be added in database
+            using (var connection =
+                new MySqlConnection("Server=127.0.0.1;Port=3306;Database=Video_Monitoring;Uid=root;Pwd=RootPassword;"))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string sql =
+                        "INSERT INTO servers(serverid, name, ipaddress, port) VALUES(@server_id, @name, @ip_address, @port);";
+                    var result = await connection.ExecuteScalarAsync(sql,
+                        new
+                        {
+                            server_id = entity.ServerId,
+                            name = entity.Name,
+                            ip_address = entity.IpAddress,
+                            port = entity.Port
+                        });
+                    return entity.ServerId;
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine(e.Message, e.StackTrace);
+                    Console.WriteLine(e);
+                    throw new RepositoryException("Failed to try to persist in the database", e);
+                }
             }
         }
 
@@ -56,7 +79,22 @@ namespace Backend.Infrastructure.Repositories
 
         public async Task DropAsync(Guid id)
         {
-            throw new NotImplementedException();
+            using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
+            try
+            {
+                connection.Open();
+                string sql = "DELETE FROM servers WHERE serverid = @server_id;";
+                await connection.ExecuteAsync(sql,
+                    new
+                    {
+                        server_id = id
+                    });
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e.Message, e.StackTrace);
+                throw new RepositoryException("Failed to try to delete the record in the database", e);
+            }
         }
 
         public async Task DropAsync(Server entityToDelete)
@@ -64,17 +102,17 @@ namespace Backend.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Server> GetByIdAsync(object id)
+        public async Task<Server> GetByIdAsync(Guid id)
         {
             await using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
             try
             {
                 connection.Open();
-                string sql = "SELECT * FROM server WHERE server_id = @server_id;";
+                string sql = "SELECT * FROM servers WHERE serverid = @serverid;";
                 Server server = await connection.QuerySingleAsync<Server>(sql, 
                     new
                     {
-                        server_id = id
+                        serverid = id
                     });
                 return server;
             }

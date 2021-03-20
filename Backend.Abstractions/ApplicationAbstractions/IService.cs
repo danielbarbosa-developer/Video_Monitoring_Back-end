@@ -11,6 +11,7 @@ namespace Backend.Abstractions.ApplicationAbstractions
         Task UpdateAsync(TInput entityToUpdate);
         Task DropAsync(string id);
         Task DropAsync(TInput entityToDelete);
-        Task<TModel> GetByIdAsync(object id);
+        Task<TModel> GetByIdAsync(string id);
+        Task<IEnumerable<TModel>> GetAllAsync();
     }
 }
