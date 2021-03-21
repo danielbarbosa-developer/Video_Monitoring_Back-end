@@ -23,6 +23,27 @@ namespace Backend.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Video>> GetAllFilter(string filter)
+        {
+            using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
+            try
+            {
+                connection.Open();
+                string sql = "SELECT * FROM videos WHERE serverid = @server_id;";
+                var videos = await connection.QueryAsync<Video>(sql, new
+                {
+                    server_id = filter
+                });
+                return videos;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                throw new RepositoryException("Failed to try to access the record in the database", e);
+            }
+        }
+
         public async Task<Guid> InsertAsync(Video entity)
         {
             entity.GenerateGuid(); // Sets the Guid to be added in database
@@ -87,7 +108,23 @@ namespace Backend.Infrastructure.Repositories
 
         public async Task<Video> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
+            try
+            {
+                connection.Open();
+                string sql = "SELECT * FROM videos WHERE videoid = @videoid;";
+                Video video = await connection.QuerySingleAsync<Video>(sql, 
+                    new
+                    {
+                        videoid = id
+                    });
+                return video;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e.Message, e.StackTrace);
+                throw new RepositoryException("Failed to try to access the record in the database", e);
+            }
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<Video, bool>> filter)

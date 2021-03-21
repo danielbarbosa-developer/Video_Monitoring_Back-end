@@ -15,10 +15,12 @@ namespace Backend.WebApi.Controllers
     {
         private readonly IService<ServerDtoInput, ServerDto> _serverService;
         private readonly IService<VideoDtoInput, VideoDto> _videoService;
-        public ApiController(IService<ServerDtoInput, ServerDto> serverService, IService<VideoDtoInput, VideoDto> videoService)
+        private readonly IVideoService<VideoInformationDto> _specialService;
+        public ApiController(IService<ServerDtoInput, ServerDto> serverService,IVideoService<VideoInformationDto> specialService, IService<VideoDtoInput, VideoDto> videoService)
         {
             _serverService = serverService;
             _videoService = videoService;
+            _specialService = specialService;
         }
         [HttpGet ("Servers")]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
@@ -80,19 +82,20 @@ namespace Backend.WebApi.Controllers
 
         }
         [HttpGet ("server/{serverId}/videos/{videoId}")]
-        public ActionResult<VideoDto> GetVideo(string serverId, string videoId)
+        public async Task<ActionResult<VideoInformationDto>> GetVideo(string serverId, string videoId)
         {
-            if (serverId != null && videoId != null)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            var response = await _specialService.GetVideoInformation(videoId);
+            return Ok(response);
         }
 
-        [HttpDelete("server/{serverId}/videos/{videoId}")]
+        [HttpGet("servers/{serverId}/videos")]
+        public async Task<ActionResult<IEnumerable<VideoInformationDto>>> GetAllVideos(string serverId)
+        {
+            var response = await _specialService.GetAllVideosInformation(serverId);
+            return Ok(response);
+        }
+
+        [HttpDelete("servers/{serverId}/videos/{videoId}")]
         public async Task<ActionResult> DeleteVideo(string serverId, string videoId)
         {
             await _videoService.DropAsync(videoId);

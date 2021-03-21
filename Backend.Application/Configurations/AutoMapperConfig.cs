@@ -19,6 +19,8 @@ namespace Backend.Application.Configurations
                 config.CreateMap<Video, VideoDto>();
                 config.CreateMap<VideoDto, Video>();
                 config.CreateMap<VideoDtoInput, Video>();
+                config.CreateMap<VideoInformationDto, Video>();
+                config.CreateMap<Video, VideoInformationDto>();
             });
         }
         public static T Map<T>(object source) => Configuration.CreateMapper().Map<T>(source);

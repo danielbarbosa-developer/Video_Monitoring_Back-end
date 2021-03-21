@@ -13,7 +13,7 @@ using FluentValidation;
 
 namespace Backend.Application.Services
 {
-    public class VideoService : IService<VideoDtoInput, VideoDto>
+    public class VideoService : IService<VideoDtoInput, VideoDto>, IVideoService<VideoInformationDto>
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Video> _repository;
@@ -72,6 +72,28 @@ namespace Backend.Application.Services
         public Task<IEnumerable<VideoDto>> GetAllAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<byte[]> DownloadVideo(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<VideoInformationDto> GetVideoInformation(string id)
+        {
+            var guid = Guid.Parse(id);
+            return _mapper.Map<VideoInformationDto>(await _repository.GetByIdAsync(guid));
+        }
+        public async Task<IEnumerable<VideoInformationDto>> GetAllVideosInformation(string serverId)
+        {
+            var guid = Guid.Parse(serverId);
+            var response = await _repository.GetAllFilter(serverId);
+            List<VideoInformationDto> videosDtos = new List<VideoInformationDto>();
+            foreach (var video in response)
+            {
+                videosDtos.Add(_mapper.Map<VideoInformationDto>(video));
+            }
+            return videosDtos;
         }
     }
 }
