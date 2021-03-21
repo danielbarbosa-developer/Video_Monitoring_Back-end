@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Backend.Abstractions.ApplicationAbstractions;
 using Backend.Application.Dtos;
 using Backend.Application.Dtos.Input;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.WebApi.Controllers
@@ -56,6 +57,13 @@ namespace Backend.WebApi.Controllers
         {
             string response = await _serverService.InsertAsync(server);
             return Ok(response); 
+        }
+
+        [HttpPost("servers/{serverId}/videos")]
+        public async Task<ActionResult> PostVideo([FromBody] VideoDto video)
+        {
+            
+            return Ok();
         }
         [HttpDelete ("server/{serverId}")]
         public async Task<ActionResult<string>> DeleteServer(string? serverId)

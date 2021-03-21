@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers.Text;
+using System.Security.Cryptography;
 using Backend.Abstractions.ApplicationAbstractions;
 
 namespace Backend.Application.Dtos
