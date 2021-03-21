@@ -14,9 +14,11 @@ namespace Backend.WebApi.Controllers
     public class ApiController : ControllerBase
     {
         private readonly IService<ServerDtoInput, ServerDto> _serverService;
-        public ApiController(IService<ServerDtoInput, ServerDto> serverService)
+        private readonly IService<VideoDtoInput, VideoDto> _videoService;
+        public ApiController(IService<ServerDtoInput, ServerDto> serverService, IService<VideoDtoInput, VideoDto> videoService)
         {
             _serverService = serverService;
+            _videoService = videoService;
         }
         [HttpGet ("Servers")]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
@@ -60,15 +62,16 @@ namespace Backend.WebApi.Controllers
         }
 
         [HttpPost("servers/{serverId}/videos")]
-        public async Task<ActionResult> PostVideo([FromBody] VideoDto video)
+        public async Task<ActionResult<string>> PostVideo(string serverId, [FromBody] VideoDtoInput video)
         {
-            
-            return Ok();
+            video.AssingServerId(serverId);
+            string response = await _videoService.InsertAsync(video);
+            return Ok(response);
         }
         [HttpDelete ("server/{serverId}")]
-        public async Task<ActionResult<string>> DeleteServer(string? serverId)
+        public async Task<ActionResult<string>> DeleteServer(string serverId)
         {
-            if (serverId == null)
+            if (String.IsNullOrEmpty(serverId))
             {
                 return BadRequest();
             }
@@ -88,21 +91,12 @@ namespace Backend.WebApi.Controllers
                 return BadRequest();
             }
         }
-        /*
-        [HttpGet("{serverId}")]
-        public ActionResult GetServer(string serverId)
+
+        [HttpDelete("server/{serverId}/videos/{videoId}")]
+        public async Task<ActionResult> DeleteVideo(string serverId, string videoId)
         {
-            
+            await _videoService.DropAsync(videoId);
+            return Ok();
         }
-        */
     }
-    /*
-    public class Server
-    {
-        public Guid ServerId { get; set; }
-        public string Name { get; set; } = null!;
-        public string IpAddress { get; set; } = null!;
-        public int Port { get; set; }
-    }
-    */
 }

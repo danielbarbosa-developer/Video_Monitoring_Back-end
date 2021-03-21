@@ -16,6 +16,8 @@ namespace Backend.Application.Configurations
                 config.CreateMap<Server, ServerDto>();
                 config.CreateMap<ServerDto, Server>();
                 config.CreateMap<ServerDtoInput, Server>();
+                config.CreateMap<Video, VideoDto>();
+                config.CreateMap<VideoDto, Video>();
                 config.CreateMap<VideoDtoInput, Video>();
             });
         }

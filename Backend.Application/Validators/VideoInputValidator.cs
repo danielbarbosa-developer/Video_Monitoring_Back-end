@@ -7,7 +7,7 @@ namespace Backend.Application.Validators
     {
         public VideoInputValidator()
         {
-            RuleFor(dto => dto.VideoContent).NotNull();
+            RuleFor(dto => dto.VideoContent).NotEmpty().NotNull();
             RuleFor(dto => dto.Description).NotEmpty().NotNull();
         }
     }
