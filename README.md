@@ -48,7 +48,7 @@ The test results will be displayed on your terminal.
 ##  Resources used in the development process
 * .NET 5.0
 * ASP.NET
-* C#*
+* C#
 * Asynchronous Programming
 * OOP
 * DDD
