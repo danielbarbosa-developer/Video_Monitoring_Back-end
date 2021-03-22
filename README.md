@@ -36,8 +36,7 @@ The API will be by default listening on port 5000 or 5001 from localhost. Open y
 https://localhost:5001/swagger/index.html
 http://localhost:5000/swagger/index.html
 
-You will have an interface for testing the API, as well as information about schemas and available methods. You can find more information about the API by accessing the README file in the Backend.WebApi folder.
-
+You will have an interface for testing the API, as well as information about schemas and available methods.
 ## Running Tests
 
 Automated tests have been developed to ensure software quality. To run the tests, type the command below in the main directory of the solution:
