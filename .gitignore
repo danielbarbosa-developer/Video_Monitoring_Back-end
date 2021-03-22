@@ -213,13 +213,3 @@ project.lock.json
 
 # Output folder used by Webpack or other FE stuff
 **/node_modules/*
-**/wwwroot/*
-
-# SpecFlow specific
-*.feature.cs
-*.feature.xlsx.*
-*.Specs_*.html
-
-#####
-# End of core ignore list, below put you custom 'per project' settings (patterns or path)
-#####
