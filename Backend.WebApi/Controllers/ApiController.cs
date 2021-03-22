@@ -22,23 +22,10 @@ namespace Backend.WebApi.Controllers
             _videoService = videoService;
             _specialService = specialService;
         }
-        [HttpGet ("Servers")]
+        [HttpGet ("servers")]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
         {
             var list = await _serverService.GetAllAsync();
-            /*
-            List<Server> list = new List<Server>();
-            for (int i = 0; i < 5; i++)
-            {
-                list.Add(new Server
-                {
-                    ServerId = Guid.NewGuid(),
-                    Name = "LocalServer",
-                    IpAddress = "127.0.1.0",
-                    Port = 8080
-                });
-            }
-            */
             return Ok(list);
         }
         [HttpGet("servers/{serverId}")]
@@ -100,6 +87,12 @@ namespace Backend.WebApi.Controllers
         {
             await _videoService.DropAsync(videoId);
             return Ok();
+        }
+        [HttpGet("servers/{serverId}/videos/{videoId}/binary")]
+        public async Task<ActionResult<string>> DownloadBinaryVideo(string serverId, string videoId)
+        {
+            var video = await _specialService.DownloadVideo(videoId);
+            return Ok(video);
         }
     }
 }

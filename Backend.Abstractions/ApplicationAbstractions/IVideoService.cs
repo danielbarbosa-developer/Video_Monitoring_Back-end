@@ -6,7 +6,7 @@ namespace Backend.Abstractions.ApplicationAbstractions
 {
     public interface IVideoService<TModel> where TModel : IDto
     {
-        Task<byte[]> DownloadVideo(string id);
+        Task<string> DownloadVideo(string id);
         Task<TModel> GetVideoInformation(string id);
         Task<IEnumerable<TModel>> GetAllVideosInformation(string serverId);
     }

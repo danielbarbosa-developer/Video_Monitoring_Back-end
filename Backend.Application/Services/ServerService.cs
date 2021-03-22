@@ -7,6 +7,7 @@ using Backend.Abstractions.InfrastructureAbstractions;
 using Backend.Application.Dtos;
 using Backend.Application.Dtos.Input;
 using Backend.Application.Exceptions;
+using Backend.Application.Handlers;
 using Backend.Application.Validators;
 using Backend.Domain.Entities;
 using FluentValidation;

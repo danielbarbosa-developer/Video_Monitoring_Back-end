@@ -52,14 +52,14 @@ namespace Backend.Infrastructure.Repositories
             {
                 await connection.OpenAsync();
                 string sql =
-                    "INSERT INTO videos(videoid, serverid, description, videocontent) VALUES(@video_id, @server_id, @description, @video_content);";
+                    "INSERT INTO videos(videoid, serverid, description, timestamp) VALUES(@video_id, @server_id, @description, @timestamp);";
                 var result = await connection.ExecuteScalarAsync(sql,
                     new
                     {
                         video_id = entity.VideoId,
                         server_id = entity.ServerId,
                         description = entity.Description,
-                        video_content = entity.VideoContent
+                        timestamp = DateTime.Now.Ticks
                     });
                 return entity.VideoId;
             }

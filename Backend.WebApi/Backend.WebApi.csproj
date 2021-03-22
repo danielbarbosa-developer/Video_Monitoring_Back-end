@@ -14,4 +14,8 @@
       <ProjectReference Include="..\Backend.Infrastructure\Backend.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\App_Data" />
+    </ItemGroup>
+
 </Project>

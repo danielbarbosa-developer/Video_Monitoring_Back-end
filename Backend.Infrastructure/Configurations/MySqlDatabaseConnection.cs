@@ -14,7 +14,7 @@ namespace Backend.Infrastructure.Configurations
             ConnectionString = configuration.GetConnectionString("MySqlConnection");
 #if DEBUG
             
-            Console.WriteLine($"NpgsqlConnection StringConnection: {this.ConnectionString}");
+            Console.WriteLine($"MySqlConnection StringConnection: {this.ConnectionString}");
 #endif
         }
         public IDbConnection GetConnection()

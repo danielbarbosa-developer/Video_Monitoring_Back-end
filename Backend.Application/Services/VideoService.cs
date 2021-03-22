@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
 using Backend.Abstractions.ApplicationAbstractions;
@@ -7,6 +8,7 @@ using Backend.Abstractions.InfrastructureAbstractions;
 using Backend.Application.Dtos;
 using Backend.Application.Dtos.Input;
 using Backend.Application.Exceptions;
+using Backend.Application.Handlers;
 using Backend.Application.Validators;
 using Backend.Domain.Entities;
 using FluentValidation;
@@ -34,7 +36,12 @@ namespace Backend.Application.Services
                     return validate.ToString();
                 }
                 var guid = await _repository.InsertAsync(_mapper.Map<Video>(entity));
-                return guid.ToString();
+                string identifier = guid.ToString();
+                
+                string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+                var fileName = $"{path}\\{identifier}.mp4";
+                VideoFileHandler.SaveVideoAsBinaryFile(entity.VideoContent,fileName);
+                return identifier;
             }
             catch (Exception e)
             {
@@ -55,10 +62,20 @@ namespace Backend.Application.Services
 
         public async Task DropAsync(string id)
         {
-            var guid = Guid.Parse(id);
-            await _repository.DropAsync(guid);
+            try
+            {
+                var guid = Guid.Parse(id);
+                await _repository.DropAsync(guid);
+                string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+                var fileName = $"{path}\\{guid}.mp4";
+                File.Delete(fileName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new ApiException("Falha ao deletar video", e);
+            }
         }
-
         public async Task DropAsync(VideoDtoInput entityToDelete)
         {
             throw new NotImplementedException();
@@ -74,9 +91,12 @@ namespace Backend.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<byte[]> DownloadVideo(string id)
+        public Task<string> DownloadVideo(string id)
         {
-            throw new NotImplementedException();
+            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+            var fileName = $"{path}\\{id}.mp4";
+            var base64String = VideoFileHandler.ConvertVideoToBase64(fileName);
+            return Task.FromResult(base64String);
         }
 
         public async Task<VideoInformationDto> GetVideoInformation(string id)
