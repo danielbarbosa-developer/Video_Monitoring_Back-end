@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Backend.Application.Dtos;
+using Backend.Application.Dtos.Input;
+using Backend.Application.Handlers;
 using Backend.WebApi;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -84,6 +86,25 @@ namespace WebApiIntegrationTests.ControllersTests
             var response = await client.DeleteAsync("Api/server/"+postResult);
             response.EnsureSuccessStatusCode();
 
+        }
+
+        [Fact]
+        public async Task Post_Video_Async_ReturnsSuccessAndGuid()
+        {
+            var base64String = VideoFileHandler.ConvertVideoToBase64("../../../../TestsData/KrabVideoTest.mp4");
+            var data = new VideoDtoInput()
+            {
+                Description = "A Krab fishing video", //only for tests
+                VideoContent = base64String
+            };
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Api/servers/"+ServerId+"/videos");
+            var content = await Task.FromResult(JsonSerializer.Serialize(data)).ConfigureAwait(false);
+            requestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            var client = _factory.CreateClient();
+
+            var response = await client.SendAsync(requestMessage);
+            this.VideoId = await response.Content.ReadAsStringAsync();
+            
         }
         private async void SetupTestsEnvironment()
         {
