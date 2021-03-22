@@ -16,11 +16,13 @@ namespace Backend.WebApi.Controllers
         private readonly IService<ServerDtoInput, ServerDto> _serverService;
         private readonly IService<VideoDtoInput, VideoDto> _videoService;
         private readonly IVideoService<VideoInformationDto> _specialService;
-        public ApiController(IService<ServerDtoInput, ServerDto> serverService,IVideoService<VideoInformationDto> specialService, IService<VideoDtoInput, VideoDto> videoService)
+        private readonly IRecycler _recycler;
+        public ApiController(IRecycler recycler, IService<ServerDtoInput, ServerDto> serverService,IVideoService<VideoInformationDto> specialService, IService<VideoDtoInput, VideoDto> videoService)
         {
             _serverService = serverService;
             _videoService = videoService;
             _specialService = specialService;
+            _recycler = recycler;
         }
         [HttpGet ("servers")]
         public async Task<ActionResult<IEnumerable<ServerDto>>> GetServers()
@@ -68,7 +70,7 @@ namespace Backend.WebApi.Controllers
             return Ok();
 
         }
-        [HttpGet ("server/{serverId}/videos/{videoId}")]
+        [HttpGet ("servers/{serverId}/videos/{videoId}")]
         public async Task<ActionResult<VideoInformationDto>> GetVideo(string serverId, string videoId)
         {
             var response = await _specialService.GetVideoInformation(videoId);
@@ -93,6 +95,21 @@ namespace Backend.WebApi.Controllers
         {
             var video = await _specialService.DownloadVideo(videoId);
             return Ok(video);
+        }
+
+        [HttpPost("recycler/process/{date}")]
+        public ActionResult RecycleVideos(string date)
+        {
+            var dateTime = Convert.ToDateTime(date);
+            var timestamp = dateTime.Ticks;
+            Task.Factory.StartNew(() => _recycler.RecycleAllVideos(timestamp));
+            return Ok();
+        }
+
+        [HttpGet("recycle/status")]
+        public ActionResult<string> GetRecyclerStatus()
+        {
+            return Ok(_recycler.Status);
         }
     }
 }

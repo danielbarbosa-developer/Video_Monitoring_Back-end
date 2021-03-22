@@ -16,6 +16,7 @@ namespace Backend.Abstractions.InfrastructureAbstractions
         Task<TModel> GetByIdAsync(Guid id);
         Task<IEnumerable<TModel>> GetAll();
         Task<IEnumerable<TModel>> GetAllFilter(string filter);
+        Task<IEnumerable<TModel>> GetAllFilter(long filter);
         Task<bool> ExistsAsync(Expression<Func<TModel, bool>> filter);
     }
 }

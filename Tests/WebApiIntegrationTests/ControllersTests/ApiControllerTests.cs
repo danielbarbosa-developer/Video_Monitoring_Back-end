@@ -27,11 +27,14 @@ namespace WebApiIntegrationTests.ControllersTests
         [Fact]
         public async Task Get_All_Servers_Async_ReturnsSuccessAndServersList()
         {
+            string serverId = await SetupServerToTest(_factory);
             var client = _factory.CreateClient();
             var response = await client.GetAsync("Api/servers");
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             Assert.NotEmpty(result);
+            await ClearServerData(_factory, serverId);
+            
         }
         [Fact]
         public async Task Get_Server_By_Id_ReturnSuccessAndServerObject()
@@ -43,7 +46,8 @@ namespace WebApiIntegrationTests.ControllersTests
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             Assert.NotEmpty(result);
-            
+            await ClearServerData(_factory, serverId);
+
         }
 
         [Fact]
@@ -64,25 +68,17 @@ namespace WebApiIntegrationTests.ControllersTests
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             Assert.NotEmpty(result);
+            await ClearServerData(_factory, result);
             
         }
         [Fact]
         public async Task Delete_Server_Async()
         {
-            var data = new ServerDto()
-            {
-                Name = "Pier Boulevard",
-                IpAddress = "127.000.000",
-                Port = 8080
-            };
-            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Api/server");
-            var content = await Task.FromResult(JsonSerializer.Serialize(data)).ConfigureAwait(false);
-            requestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
+            string serverId = await SetupServerToTest(_factory);
             var client = _factory.CreateClient();
 
-            var postResponse = await client.SendAsync(requestMessage);
-            var postResult = await postResponse.Content.ReadAsStringAsync();
-            var response = await client.DeleteAsync("Api/server/"+postResult);
+            
+            var response = await client.DeleteAsync($"Api/server/{serverId}");
             response.EnsureSuccessStatusCode();
         }
         [Fact]
@@ -95,7 +91,7 @@ namespace WebApiIntegrationTests.ControllersTests
                 Description = "A Krab fishing video", //only for tests
                 VideoContent = base64String
             };
-            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Api/servers/"+serverId+"/videos");
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"Api/servers/{serverId}/videos");
             var content = await Task.FromResult(JsonSerializer.Serialize(data)).ConfigureAwait(false);
             requestMessage.Content = new StringContent(content, Encoding.UTF8, "application/json");
             var client = _factory.CreateClient();
@@ -106,7 +102,37 @@ namespace WebApiIntegrationTests.ControllersTests
             Assert.NotEmpty(result);
             Assert.NotNull(result);
             await ClearVideoData(_factory, result);
+            await ClearServerData(_factory, serverId);
 
+        }
+
+        [Fact]
+        public async Task Get_Video_Information_Async_ReturnSuccessAndVideoInformationDto()
+        {
+            string serverId = await SetupServerToTest(_factory);
+            string videoId = await SetupVideoToTest(_factory, serverId);
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync($"Api/servers/{serverId}/videos/{videoId}");
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.NotEmpty(result);
+            Assert.NotNull(result);
+            await ClearVideoData(_factory, videoId);
+            await ClearServerData(_factory, serverId);
+        }
+        [Fact]
+        public async Task Get_All_Videos_Information_Async_ReturnSuccessAndVideoInformationDtoList()
+        {
+            var serverId = await SetupServerToTest(_factory);
+            var videoId = await SetupVideoToTest(_factory, serverId);
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync($"Api/servers/{serverId}/videos");
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.NotEmpty(result);
+            Assert.NotNull(result);
+            await ClearVideoData(_factory, videoId);
+            await ClearServerData(_factory, serverId);
         }
         [Fact]
         public async Task Download_Video_From_Server_Async_ReturnSuccessAndBase64()
@@ -122,10 +148,29 @@ namespace WebApiIntegrationTests.ControllersTests
         [Fact]
         public async Task Delete_Video_From_Server_Async_ReturnSuccess()
         {
-            var videoToDelete = SetupVideoToTest(_factory);
+            var serverId = await SetupServerToTest(_factory);
+            var videoToDelete = await SetupVideoToTest(_factory, serverId);
             var client = _factory.CreateClient();
             
-            var response = await client.DeleteAsync($"Api/servers/00facf75-4984-4f11-80a6-e8a491d1b489/videos/{videoToDelete}");
+            var response = await client.DeleteAsync($"Api/servers/{serverId}/videos/{videoToDelete}");
+            response.EnsureSuccessStatusCode();
+            await ClearServerData(_factory, serverId);
+        }
+
+        [Fact]
+        public async Task Recycle_All_Videos_Async_ReturnStatusOk()
+        {
+            var client = _factory.CreateClient();
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "Api/recycler/process/22-03-2021");
+            var response = await client.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task Get_Recycle_Operation_Status_Async_ReturnSuccessAndStatus()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync("Api/recycle/status");
             response.EnsureSuccessStatusCode();
         }
     }

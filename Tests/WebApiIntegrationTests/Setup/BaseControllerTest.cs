@@ -29,9 +29,8 @@ namespace WebApiIntegrationTests.Setup
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<string> SetupVideoToTest(WebApplicationFactory<Startup> factory)
+        protected async Task<string> SetupVideoToTest(WebApplicationFactory<Startup> factory, string serverId)
         {
-            string serverId = await SetupServerToTest(factory);
             var base64String = VideoFileHandler.ConvertVideoToBase64("../../../../TestsData/KrabVideoTest.mp4");
             var data = new VideoDtoInput()
             {
@@ -51,6 +50,12 @@ namespace WebApiIntegrationTests.Setup
         {
             var client = factory.CreateClient();
             await client.DeleteAsync($"Api/servers/00facf75-4984-4f11-80a6-e8a491d1b489/videos/{videoToDelete}");
+        }
+
+        protected async Task ClearServerData(WebApplicationFactory<Startup> factory, string serverToDelete)
+        {
+            var client = factory.CreateClient();
+            await client.DeleteAsync($"Api/servers/{serverToDelete}");
         }
     }
 }

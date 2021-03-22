@@ -1,1 +1,0 @@
-docker run -d --env-file ./postgres.env.list -p 5433:5433 --restart=unless-stopped --hostname localhost --name=postgres -it postgresbackend

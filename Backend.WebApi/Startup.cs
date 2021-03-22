@@ -9,6 +9,7 @@ using Backend.Abstractions.InfrastructureAbstractions;
 using Backend.Application.Configurations;
 using Backend.Application.Dtos;
 using Backend.Application.Dtos.Input;
+using Backend.Application.Handlers;
 using Backend.Application.Services;
 using Backend.Domain.Entities;
 using Backend.Infrastructure.Configurations;
@@ -44,6 +45,7 @@ namespace Backend.WebApi
             services.AddTransient<IDatabaseConnection, MySqlDatabaseConnection>();
             services.AddTransient<IRepository<Server>, ServerRepository>();
             services.AddTransient<IRepository<Video>, VideoRepository>();
+            services.AddSingleton<IRecycler, RecyclerVideosHandler>();
             //____________________________________________________________________________________
             // Automapper configuration
             AutoMapperConfig.InicializeAutoMapper();

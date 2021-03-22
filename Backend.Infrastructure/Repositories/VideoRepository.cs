@@ -44,6 +44,27 @@ namespace Backend.Infrastructure.Repositories
             }
         }
 
+        public async Task<IEnumerable<Video>> GetAllFilter(long filter)
+        {
+            using MySqlConnection connection = (MySqlConnection)_databaseConnection.GetConnection();
+            try
+            {
+                connection.Open();
+                string sql = "SELECT * FROM videos WHERE timestamp <= @timestamp;";
+                var videos = await connection.QueryAsync<Video>(sql, new
+                {
+                    timestamp = filter
+                });
+                return videos;
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                throw new RepositoryException("Failed to try to access the record in the database", e);
+            }
+        }
+
         public async Task<Guid> InsertAsync(Video entity)
         {
             entity.GenerateGuid(); // Sets the Guid to be added in database

@@ -42,6 +42,11 @@ namespace Backend.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Server>> GetAllFilter(long filter)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Guid> InsertAsync(Server entity)
         {
             entity.GenerateGuid(); // Sets the Guid to be added in database
